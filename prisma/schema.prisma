@@ -1,0 +1,52 @@
+// Prisma schema for the portfolio — Neon (PostgreSQL)
+// Mirrors the original PHP schema: projects, skills, contacts, settings.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  // Neon pooled connection; direct URL used for migrations.
+  directUrl = env("DIRECT_URL")
+}
+
+model Project {
+  id          Int      @id @default(autoincrement())
+  title       String
+  // Stack stored as JSON array of strings (was a JSON-encoded TEXT column in PHP).
+  stack       Json?
+  description String?
+  github      String?
+  link        String?
+  image       String?
+  imageAlt    String?  @map("image_alt")
+
+  @@map("projects")
+}
+
+model Skill {
+  id    Int    @id @default(autoincrement())
+  name  String
+  level Int
+
+  @@map("skills")
+}
+
+model Contact {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String
+  message   String
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("contacts")
+}
+
+model Setting {
+  key   String  @id
+  value String?
+
+  @@map("settings")
+}
