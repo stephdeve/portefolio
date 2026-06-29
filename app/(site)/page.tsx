@@ -1,7 +1,6 @@
-import fs from 'fs';
-import path from 'path';
 import Link from 'next/link';
 import { getSetting } from '@/lib/data';
+import { assetUrl } from '@/lib/url';
 import { FallbackImage } from '@/components/ProfileImage';
 
 export const metadata = {
@@ -11,20 +10,14 @@ export const metadata = {
 
 export const dynamic = 'force-dynamic';
 
-function profileImageSrc(): string {
-  const file = path.join(process.cwd(), 'public', 'assets', 'images', 'profile.jpg');
-  let v = Math.floor(Date.now() / 1000);
-  try {
-    v = Math.floor(fs.statSync(file).mtimeMs / 1000);
-  } catch {
-    /* keep time-based fallback */
-  }
-  return `/assets/images/profile.jpg?v=${v}`;
-}
-
 export default async function HomePage() {
-  const imageAlt = (await getSetting('home.profile_image_alt')) || 'Photo professionnelle';
-  const imgSrc = profileImageSrc();
+  const [profileImage, imageAltRaw] = await Promise.all([
+    getSetting('home.profile_image'),
+    getSetting('home.profile_image_alt'),
+  ]);
+  const imageAlt = imageAltRaw || 'Photo professionnelle';
+  // Use the uploaded image (Vercel Blob) if set, otherwise the shipped default.
+  const imgSrc = profileImage ? assetUrl(profileImage) : '/assets/images/profile.jpg';
 
   return (
     <>

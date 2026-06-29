@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import { FallbackImage } from '@/components/ProfileImage';
+import { assetUrl } from '@/lib/url';
 
 type Action = (formData: FormData) => void | Promise<void>;
 
@@ -22,7 +23,6 @@ const inputClass =
 
 export function ProjectForm({ action, project }: { action: Action; project: ProjectData }) {
   const [techs, setTechs] = useState<string[]>(project.stack.length > 0 ? project.stack : []);
-  const fallback = project.image ? project.image.replace(/_resized\.[^.]+$/, '_thumb.jpg') : '';
 
   return (
     <div className="max-w-3xl animate-slide-up">
@@ -115,8 +115,7 @@ export function ProjectForm({ action, project }: { action: Action; project: Proj
                   <div className="relative group">
                     <FallbackImage
                       className="w-full h-48 object-cover rounded-lg border border-gray-200 dark:border-gray-800"
-                      src={`/${project.image}`}
-                      fallbackSrc={`/${fallback}`}
+                      src={assetUrl(project.image)}
                       alt="Aperçu"
                     />
                     <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center">

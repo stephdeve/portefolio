@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { getProjectsPaginated } from '@/lib/data';
+import { assetUrl } from '@/lib/url';
 import { Flash } from '@/components/admin/Flash';
 import { DeleteForm } from '@/components/admin/DeleteForm';
 import { FallbackImage } from '@/components/ProfileImage';
@@ -105,7 +106,6 @@ export default async function AdminProjectsPage({
             </thead>
             <tbody className="divide-y divide-gray-200 dark:divide-gray-800">
               {projects.map((p) => {
-                const fallback = p.image ? p.image.replace(/_resized\.[^.]+$/, '_thumb.jpg') : '';
                 return (
                   <tr key={p.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">{p.id}</td>
@@ -113,8 +113,7 @@ export default async function AdminProjectsPage({
                       {p.image ? (
                         <FallbackImage
                           className="h-12 w-20 object-cover rounded-lg border border-gray-200 dark:border-gray-700"
-                          src={`/${p.image}`}
-                          fallbackSrc={`/${fallback}`}
+                          src={assetUrl(p.image)}
                           alt="Miniature"
                         />
                       ) : (

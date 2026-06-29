@@ -4,13 +4,13 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { requireAdmin } from '@/lib/server-auth';
 import { getSetting, setSetting } from '@/lib/data';
-import { processImageUpload, deleteUpload, copyToProfileImage, ImageError } from '@/lib/images';
+import { processImageUpload, deleteUpload, ImageError } from '@/lib/images';
 
 function flash(type: 'ok' | 'err', message: string): never {
   redirect(`/admin/settings?${type}=${encodeURIComponent(message)}`);
 }
 
-const PROFILE_IMAGE_OPTS = { resizeWidth: 1200, resizeHeight: 1200, thumbSize: 480, quality: 85 };
+const PROFILE_IMAGE_OPTS = { width: 480, height: 480, mode: 'cover' as const, quality: 85 };
 
 export async function updateProfileImage(formData: FormData): Promise<void> {
   await requireAdmin();
@@ -37,9 +37,6 @@ export async function updateProfileImage(formData: FormData): Promise<void> {
 
   await setSetting('home.profile_image', imagePath!);
   await setSetting('home.profile_image_alt', alt);
-
-  // Also refresh the static home profile image for immediate effect.
-  await copyToProfileImage(imagePath!);
 
   revalidatePath('/');
   flash('ok', 'Photo mise à jour.');

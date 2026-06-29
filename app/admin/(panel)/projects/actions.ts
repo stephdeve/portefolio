@@ -17,7 +17,7 @@ function parseStack(formData: FormData): string[] {
     .filter((v) => v !== '');
 }
 
-const PROJECT_IMAGE_OPTS = { resizeWidth: 1200, resizeHeight: 800, thumbSize: 300, quality: 85 };
+const PROJECT_IMAGE_OPTS = { width: 1200, height: 800, mode: 'fit' as const, quality: 85 };
 
 function getUploadedFile(formData: FormData): File | null {
   const file = formData.get('image');

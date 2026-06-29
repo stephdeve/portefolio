@@ -1,4 +1,5 @@
 import { getSetting } from '@/lib/data';
+import { assetUrl } from '@/lib/url';
 import { Flash } from '@/components/admin/Flash';
 import { FallbackImage } from '@/components/ProfileImage';
 import { updateProfileImage } from './actions';
@@ -13,7 +14,7 @@ export default async function AdminSettingsPage({
 }) {
   const profileImage = await getSetting('home.profile_image');
   const profileImageAlt = await getSetting('home.profile_image_alt');
-  const previewSrc = profileImage ? `/${profileImage.replace(/^\/+/, '')}` : '/assets/images/profile.jpg';
+  const previewSrc = profileImage ? assetUrl(profileImage) : '/assets/images/profile.jpg';
 
   return (
     <div className="max-w-3xl mx-auto space-y-4">

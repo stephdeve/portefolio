@@ -11,7 +11,7 @@ Portfolio moderne et performant, migré de PHP vers **Next.js 14 (App Router)** 
 - Base de données Neon (PostgreSQL) via Prisma
 - Panneau admin complet (CRUD projets, compétences, contacts, paramètres)
 - Authentification admin par cookie signé (HMAC) + middleware
-- Upload & traitement d'images (sharp) vers `public/uploads`
+- Upload & traitement d'images (sharp) vers **Vercel Blob** (stockage persistant, compatible serverless)
 - Envoi d'emails de contact via SMTP (Nodemailer)
 - API JSON : `/api/projects`, `/api/skills`
 
@@ -79,14 +79,19 @@ npm run dev
 | `npm run db:seed` | Insère les données initiales |
 | `npm run db:studio` | Ouvre Prisma Studio |
 
-## Déploiement
+## Déploiement (Vercel)
 
-Compatible Vercel / Node. Définir les variables d'environnement en production
-et exécuter `npm run db:push` (ou `prisma migrate deploy`) sur la base Neon.
+1. Pousser le repo sur GitHub puis l'importer sur Vercel (Next.js auto-détecté).
+2. Base Neon : créer le schéma une fois (`npm run db:push` en local vers la base de prod).
+3. **Stockage images** : dans le projet Vercel, **Storage → Create → Blob**, puis lier le store
+   au projet. Le `BLOB_READ_WRITE_TOKEN` est injecté automatiquement.
+   En local, copier ce token dans `.env`.
+4. Renseigner les variables d'environnement (voir `.env.example`) : `DATABASE_URL`,
+   `DIRECT_URL`, `BLOB_READ_WRITE_TOKEN`, `ADMIN_*`, `SMTP_*`, `APP_URL`, etc.
+5. Déployer.
 
-> ℹ️ Les uploads sont stockés dans `public/uploads` (système de fichiers).
-> Sur un hébergement serverless éphémère (ex. Vercel), ce dossier n'est pas
-> persistant : passer à un stockage objet (Vercel Blob, S3) si nécessaire.
+> ℹ️ Les images uploadées (projets + photo de profil) sont stockées sur **Vercel Blob** :
+> persistant et compatible serverless. Aucun fichier n'est écrit sur le disque du serveur.
 
 ## Licence
 

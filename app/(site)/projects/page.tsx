@@ -1,4 +1,5 @@
 import { getProjects } from '@/lib/data';
+import { assetUrl } from '@/lib/url';
 import { FallbackImage } from '@/components/ProfileImage';
 
 export const metadata = {
@@ -46,9 +47,6 @@ export default async function ProjectsPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {projects.map((project) => {
-              const fallback = project.image
-                ? project.image.replace(/_resized\.[^.]+$/, '_thumb.jpg')
-                : '';
               return (
                 <div
                   key={project.id}
@@ -58,8 +56,7 @@ export default async function ProjectsPage() {
                     <div className="aspect-video overflow-hidden relative">
                       <FallbackImage
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                        src={`/${project.image}`}
-                        fallbackSrc={`/${fallback}`}
+                        src={assetUrl(project.image)}
                         alt={project.imageAlt || project.title}
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />

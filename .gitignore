@@ -40,6 +40,3 @@ tmp/
 *.sqlite
 *.sqlite3
 
-# User uploads (keep folder via .gitkeep)
-/public/uploads/*
-!/public/uploads/.gitkeep
