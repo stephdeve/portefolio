@@ -4,8 +4,8 @@ import { assetUrl } from '@/lib/url';
 import { FallbackImage } from '@/components/ProfileImage';
 
 export const metadata = {
-  title: 'Développeur PHP - Portfolio',
-  description: "Portfolio moderne d’un développeur PHP: projets, compétences et contact.",
+  title: 'Développeur Web & Mobile - Portfolio',
+  description: "Portfolio d’un développeur web et mobile spécialisé Cloud & DevOps : projets, compétences et contact.",
 };
 
 export const dynamic = 'force-dynamic';
@@ -99,6 +99,61 @@ export default async function HomePage() {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ========== QUI SUIS-JE ? ========== */}
+      <section className="max-w-6xl mx-auto px-4 py-16 my-16">
+        <div className="bg-white dark:bg-gray-900 rounded-3xl p-8 md:p-12 shadow-lg border border-gray-200 dark:border-gray-800 animate-fade-in">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center shrink-0">
+              <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                <path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
+            </div>
+            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">
+              Qui suis-je ?
+            </h2>
+          </div>
+
+          <div className="space-y-4 text-gray-600 dark:text-gray-400 leading-relaxed text-base md:text-lg">
+            <p>
+              Je suis développeur web et mobile, passionné par la conception de solutions numériques complètes et évolutives. J&apos;interviens aussi sur les environnements Cloud Computing et DevOps, avec une forte orientation vers l&apos;automatisation, la performance et la scalabilité des applications.
+            </p>
+            <p>
+              J&apos;aime transformer des idées en produits concrets : applications web, plateformes mobiles et systèmes cloud bien architecturés. Mon approche repose sur une vision globale du développement, allant de la conception logicielle jusqu&apos;au déploiement en production.
+            </p>
+          </div>
+
+          <div className="mt-6">
+            <h3 className="text-sm font-bold uppercase tracking-widest text-primary/70 dark:text-primary/50 mb-4">
+              Je m&apos;intéresse particulièrement à
+            </h3>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+              {[
+                { icon: 'M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10', label: "Architectures modernes et maintenables" },
+                { icon: 'M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z', label: "API robustes et sécurisées" },
+                { icon: 'M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z', label: "Déploiement cloud et conteneurisation" },
+                { icon: 'M13 10V3L4 14h7v7l9-11h-7z', label: "Optimisation des systèmes et performances" },
+              ].map((item) => (
+                <div key={item.label} className="flex items-start gap-3 p-4 rounded-xl bg-primary/5 dark:bg-primary/10 border border-primary/10">
+                  <svg className="w-5 h-5 text-primary shrink-0 mt-0.5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                    <path d={item.icon} />
+                  </svg>
+                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{item.label}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-800">
+            <p className="text-gray-500 dark:text-gray-500 italic text-sm flex items-center gap-2">
+              <svg className="w-4 h-4 text-primary shrink-0" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                <path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              Toujours en apprentissage, j&apos;évolue en continu pour maîtriser les technologies les plus pertinentes et construire des solutions fiables, modernes et prêtes pour le futur.
+            </p>
           </div>
         </div>
       </section>
