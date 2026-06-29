@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { getSkills } from '@/lib/data';
 import { Flash } from '@/components/admin/Flash';
 import { DeleteForm } from '@/components/admin/DeleteForm';
+import { SkillIcon } from '@/lib/icons';
 import { deleteSkill } from './actions';
 
 export const metadata = { title: 'Compétences' };
@@ -42,7 +43,10 @@ export default async function AdminSkillsPage({
           >
             <div className="p-6">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{skill.name}</h3>
+                <div className="flex items-center gap-2">
+                  <SkillIcon logo={skill.logo} className="text-primary" />
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{skill.name}</h3>
+                </div>
                 <span className="text-2xl font-bold text-primary">{skill.level}%</span>
               </div>
               <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 mb-4">

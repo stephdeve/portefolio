@@ -13,6 +13,6 @@ export default async function EditSkillPage({ searchParams }: { searchParams: { 
     redirect('/admin/skills?err=' + encodeURIComponent('Compétence introuvable.'));
   }
   return (
-    <SkillForm action={updateSkill} skill={{ id: skill.id, name: skill.name, level: skill.level }} />
+    <SkillForm action={updateSkill} skill={{ id: skill.id, name: skill.name, level: skill.level, logo: skill.logo }} />
   );
 }

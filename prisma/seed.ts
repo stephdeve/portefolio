@@ -6,23 +6,21 @@ const prisma = new PrismaClient();
 async function main() {
   const skillCount = await prisma.skill.count();
   if (skillCount === 0) {
-    const skills: [string, number][] = [
-      ['PHP', 95],
-      ['JavaScript', 90],
-      ['MySQL', 85],
-      ['HTML5/CSS3', 92],
-      ['REST APIs', 85],
-      ['Git', 88],
-      ['Linux', 80],
-      ['Docker', 80],
-      ['Kubernetes', 65],
-      ['AWS', 70],
-      ['GitHub Actions', 75],
-      ['CI/CD', 80],
+    const skills: { name: string; level: number; logo: string | null }[] = [
+      { name: 'PHP', level: 95, logo: 'php' },
+      { name: 'JavaScript', level: 90, logo: 'javascript' },
+      { name: 'MySQL', level: 85, logo: 'mysql' },
+      { name: 'HTML5/CSS3', level: 92, logo: 'html' },
+      { name: 'REST APIs', level: 85, logo: 'rest' },
+      { name: 'Git', level: 88, logo: 'git' },
+      { name: 'Linux', level: 80, logo: 'linux' },
+      { name: 'Docker', level: 80, logo: 'docker' },
+      { name: 'Kubernetes', level: 65, logo: 'kubernetes' },
+      { name: 'AWS', level: 70, logo: 'aws' },
+      { name: 'GitHub Actions', level: 75, logo: 'github' },
+      { name: 'CI/CD', level: 80, logo: 'cicd' },
     ];
-    await prisma.skill.createMany({
-      data: skills.map(([name, level]) => ({ name, level })),
-    });
+    await prisma.skill.createMany({ data: skills });
     console.log(`Seeded ${skills.length} skills.`);
   }
 

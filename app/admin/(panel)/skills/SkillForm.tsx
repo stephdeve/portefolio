@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
+import { skillIcons, getIcon } from '@/lib/icons';
 
 type Action = (formData: FormData) => void | Promise<void>;
 
@@ -10,9 +11,10 @@ export function SkillForm({
   skill,
 }: {
   action: Action;
-  skill: { id: number | null; name: string; level: number };
+  skill: { id: number | null; name: string; level: number; logo: string | null };
 }) {
   const [level, setLevel] = useState(skill.level);
+  const [selectedIcon, setSelectedIcon] = useState(skill.logo ?? '');
 
   return (
     <div className="max-w-2xl animate-slide-up">
@@ -41,6 +43,35 @@ export function SkillForm({
               required
               placeholder="Ex: PHP, JavaScript, MySQL..."
             />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Icône
+            </label>
+            <input type="hidden" name="logo" value={selectedIcon} />
+            <div className="grid grid-cols-6 sm:grid-cols-8 gap-2">
+              <button
+                type="button"
+                className={`p-2 rounded-lg border transition-all ${selectedIcon === '' ? 'border-primary bg-primary/10 ring-2 ring-primary/30' : 'border-gray-200 dark:border-gray-700 hover:border-primary/50'}`}
+                onClick={() => setSelectedIcon('')}
+                title="Auto"
+              >
+                <span className="block text-xs text-center text-gray-500">Auto</span>
+              </button>
+              {skillIcons().map((ic) => (
+                <button
+                  key={ic.key}
+                  type="button"
+                  className={`p-2 rounded-lg border transition-all flex flex-col items-center gap-1 ${selectedIcon === ic.key ? 'border-primary bg-primary/10 ring-2 ring-primary/30' : 'border-gray-200 dark:border-gray-700 hover:border-primary/50'}`}
+                  onClick={() => setSelectedIcon(ic.key)}
+                  title={ic.label}
+                >
+                  <span className="text-primary">{ic.icon}</span>
+                  <span className="text-[10px] text-gray-500 truncate w-full text-center leading-tight">{ic.label}</span>
+                </button>
+              ))}
+            </div>
           </div>
 
           <div>
