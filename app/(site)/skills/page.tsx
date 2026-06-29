@@ -83,14 +83,34 @@ function SectionBlock({ title, icon, skills }: { title: string; icon: string; sk
   );
 }
 
+function inferCategory(name: string): string | null {
+  const n = name.toLowerCase();
+  const web = ['php', 'javascript', 'typescript', 'html', 'css', 'react', 'vue', 'next.js', 'tailwind', 'mysql', 'rest api', 'sql', 'laravel', 'spring', 'java', 'backend', 'frontend'];
+  const mobile = ['flutter', 'dart', 'mobile', 'sqlite'];
+  const cloud = ['docker', 'kubernetes', 'k8s', 'aws', 'ecr', 'ci/cd', 'github action', 'linux', 'devops', 'cloud', 'containeurisation', 'déploiement'];
+  const tools = ['git', 'github', 'postman', 'vs code', 'intellij', 'android studio', 'uml', 'plantuml', 'postgresql', 'redis', 'rabbitmq'];
+  const softSkills = ['résolution', 'analyse', 'autonomie', 'apprentissage', 'adaptabilité', 'rigueur', 'innovation', 'équipe', 'communication', 'collaboration', 'créativité'];
+  if (softSkills.some((k) => n.includes(k))) return 'soft';
+  if (web.some((k) => n.includes(k))) return 'web';
+  if (mobile.some((k) => n.includes(k))) return 'mobile';
+  if (cloud.some((k) => n.includes(k))) return 'cloud';
+  if (tools.some((k) => n.includes(k))) return 'tools';
+  return null;
+}
+
 export default async function SkillsPage() {
   const allSkills = await getSkills();
 
-  const web = allSkills.filter((s) => s.category === 'web');
-  const mobile = allSkills.filter((s) => s.category === 'mobile');
-  const cloud = allSkills.filter((s) => s.category === 'cloud');
-  const tools = allSkills.filter((s) => s.category === 'tools');
-  const soft = allSkills.filter((s) => s.category === 'soft');
+  const categorized = allSkills.map((s) => ({
+    ...s,
+    category: s.category ?? inferCategory(s.name),
+  }));
+
+  const web = categorized.filter((s) => s.category === 'web');
+  const mobile = categorized.filter((s) => s.category === 'mobile');
+  const cloud = categorized.filter((s) => s.category === 'cloud');
+  const tools = categorized.filter((s) => s.category === 'tools');
+  const soft = categorized.filter((s) => s.category === 'soft');
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-primary/5 dark:from-gray-950 dark:via-gray-900 dark:to-primary/10">
