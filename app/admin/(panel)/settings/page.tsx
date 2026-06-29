@@ -42,6 +42,7 @@ export default async function AdminSettingsPage({
     'home.stats',
     'home.meta_title',
     'home.meta_description',
+    'home.social_links',
   ];
   for (const k of keys) {
     settings[k] = await getSetting(k);
@@ -73,6 +74,9 @@ export default async function AdminSettingsPage({
     { number: '100%', label: 'Satisfaction' },
   ];
   const stats = parseJSON<{ number: string; label: string }[]>(settings['home.stats'], defaultStats);
+
+  const defaultSocialLinks = { github: '', linkedin: '', twitter: '', facebook: '', whatsapp: '' };
+  const socialLinks = parseJSON<Record<string, string>>(settings['home.social_links'], defaultSocialLinks);
 
   return (
     <div className="max-w-4xl mx-auto space-y-8">
@@ -307,6 +311,33 @@ export default async function AdminSettingsPage({
                 />
               </div>
             ))}
+          </div>
+        </section>
+
+        {/* RÉSEAUX SOCIAUX */}
+        <section className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-6">
+          <h3 className="text-lg font-semibold mb-4">Réseaux sociaux (affichés sur l&apos;accueil)</h3>
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium mb-1">GitHub</label>
+              <input className="w-full rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50" type="url" name="home.social_github" defaultValue={socialLinks.github || ''} placeholder="https://github.com/username" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">LinkedIn</label>
+              <input className="w-full rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50" type="url" name="home.social_linkedin" defaultValue={socialLinks.linkedin || ''} placeholder="https://linkedin.com/in/username" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Twitter / X</label>
+              <input className="w-full rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50" type="url" name="home.social_twitter" defaultValue={socialLinks.twitter || ''} placeholder="https://twitter.com/username" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Facebook</label>
+              <input className="w-full rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50" type="url" name="home.social_facebook" defaultValue={socialLinks.facebook || ''} placeholder="https://facebook.com/username" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">WhatsApp</label>
+              <input className="w-full rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50" type="url" name="home.social_whatsapp" defaultValue={socialLinks.whatsapp || ''} placeholder="https://wa.me/..." />
+            </div>
           </div>
         </section>
 

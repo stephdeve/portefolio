@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { getSetting } from '@/lib/data';
 import { assetUrl } from '@/lib/url';
 import { FallbackImage } from '@/components/ProfileImage';
+import { GITHUB_ICON, LINKEDIN_ICON, TWITTER_ICON, FACEBOOK_ICON, WHATSAPP_ICON } from '@/lib/icons';
 
 export const dynamic = 'force-dynamic';
 
@@ -49,6 +50,7 @@ export default async function HomePage() {
     'home.stats',
     'home.meta_title',
     'home.meta_description',
+    'home.social_links',
   ];
   for (const k of keys) {
     settings[k] = await getSetting(k);
@@ -83,6 +85,15 @@ export default async function HomePage() {
     { number: '15+', label: 'Technologies' },
     { number: '100%', label: 'Satisfaction' },
   ]);
+
+  const socialLinks = parseJSON<Record<string, string>>(settings['home.social_links'], {});
+  const SOCIAL_ICONS_MAP: Record<string, JSX.Element> = {
+    github: GITHUB_ICON,
+    linkedin: LINKEDIN_ICON,
+    twitter: TWITTER_ICON,
+    facebook: FACEBOOK_ICON,
+    whatsapp: WHATSAPP_ICON,
+  };
 
   const imageAlt = s(settings['home.profile_image_alt'], 'Photo professionnelle');
   const imgSrc = settings['home.profile_image']
@@ -128,6 +139,15 @@ export default async function HomePage() {
                   </svg>
                   Me contacter
                 </Link>
+              </div>
+              <div className="flex gap-4 pt-6">
+                {Object.entries(socialLinks).filter(([, url]) => url).map(([key, url]) => (
+                  <a key={key} href={url} target="_blank" rel="noopener noreferrer" className="w-11 h-11 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary/10 dark:hover:bg-primary/20 transition-colors" aria-label={key}>
+                    <svg className="w-5 h-5 text-gray-600 dark:text-gray-400 hover:text-primary" fill="currentColor" viewBox="0 0 24 24">
+                      {SOCIAL_ICONS_MAP[key]}
+                    </svg>
+                  </a>
+                ))}
               </div>
             </div>
             <div className="relative animate-slide-in-right">

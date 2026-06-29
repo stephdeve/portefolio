@@ -97,6 +97,17 @@ export async function updateHomeContent(formData: FormData): Promise<void> {
   }
   await setSetting('home.stats', stats.length > 0 ? JSON.stringify(stats) : null);
 
+  // Reconstruire le JSON des liens sociaux
+  const socialKeys = ['github', 'linkedin', 'twitter', 'facebook', 'whatsapp'];
+  const socialLinks: Record<string, string> = {};
+  for (const key of socialKeys) {
+    const value = formData.get(`home.social_${key}`);
+    if (value && String(value).trim()) {
+      socialLinks[key] = String(value).trim();
+    }
+  }
+  await setSetting('home.social_links', Object.keys(socialLinks).length > 0 ? JSON.stringify(socialLinks) : null);
+
   revalidatePath('/');
   flash('ok', 'Contenu de la page d\'accueil mis à jour.');
 }
