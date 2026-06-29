@@ -1,146 +1,160 @@
-import { getSkills } from '@/lib/data';
-import { SkillIcon } from '@/lib/icons';
-
 export const metadata = {
-  title: 'Compétences',
-  description: 'Développement web, mobile, Cloud & DevOps — un écosystème de compétences orienté vers la construction de solutions complètes.',
+  title: 'Mes Compétences',
+  description: 'Développeur passionné par la conception d\'applications performantes, évolutives et modernes.',
 };
 
-export const dynamic = 'force-dynamic';
-
-function levelLabel(level: number): string {
-  if (level >= 80) return 'Avancé';
-  if (level >= 50) return 'Intermédiaire';
-  return 'Débutant';
-}
-
-function levelColor(level: number): string {
-  if (level >= 80) return 'bg-green-500';
-  if (level >= 50) return 'bg-yellow-500';
-  return 'bg-red-500';
-}
-
-function SkillBadge({ name, level, logo }: { name: string; level: number; logo: string | null }) {
+export default function SkillsPage() {
   return (
-    <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 hover:shadow-md transition-shadow">
-      <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-        <SkillIcon logo={logo} className="text-primary w-4 h-4" />
-      </div>
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center justify-between gap-2">
-          <span className="text-sm font-medium text-gray-900 dark:text-white truncate">{name}</span>
-          <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full text-white shrink-0 ${levelColor(level)}`}>
-            {levelLabel(level)}
-          </span>
+    <div className="min-h-screen bg-[#f4f7fc]">
+      <div className="max-w-[1200px] mx-auto px-4 sm:px-6 py-8 sm:py-12">
+
+        {/* ========== EN-TÊTE ========== */}
+        <div className="text-center mb-12">
+          <h1 className="text-4xl sm:text-5xl font-bold text-[#0b2b4b] tracking-tight mb-2">
+            MES COMPÉTENCES
+          </h1>
+          <p className="text-xl text-[#2d4056] font-normal max-w-[600px] mx-auto mb-1">
+            Un ensemble de compétences pour créer des solutions complètes
+          </p>
+          <p className="text-base text-[#4a5b6e] max-w-[550px] mx-auto">
+            Développeur passionné par la conception d&apos;applications performantes, évolutives et modernes.
+          </p>
         </div>
-        <div className="mt-1.5 w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5 overflow-hidden">
-          <div
-            className="h-full bg-gradient-to-r from-primary to-purple-500 rounded-full transition-all duration-1000"
-            style={{ width: `${level}%` }}
-          />
-        </div>
-      </div>
-    </div>
-  );
-}
 
-function SoftSkillCard({ name }: { name: string }) {
-  const emoji = name.includes('Résolution') ? '🧩'
-    : name.includes('analyse') ? '🧠'
-    : name.includes('Autonomie') ? '🎯'
-    : name.includes('Apprentissage') ? '🚀'
-    : name.includes('Adaptabilité') ? '🔄'
-    : name.includes('Rigueur') ? '📏'
-    : name.includes('innovation') ? '💡'
-    : name.includes('équipe') ? '🤝'
-    : name.includes('Communication') ? '🗣️'
-    : '⭐';
+        {/* ========== GRILLE DES CARTES ========== */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
 
-  return (
-    <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 hover:shadow-md transition-shadow">
-      <span className="text-xl">{emoji}</span>
-      <span className="text-sm font-medium text-gray-900 dark:text-white">{name}</span>
-    </div>
-  );
-}
+          {/* 01 – Développement Web */}
+          <div className="bg-white rounded-[20px] p-7 sm:p-8 shadow-[0_8px_24px_rgba(0,20,40,0.06)] hover:shadow-[0_16px_32px_rgba(0,20,40,0.08)] hover:-translate-y-1 transition-all duration-200">
+            <div className="text-4xl font-bold text-[#cbd5e1] tracking-tight mb-1">01</div>
+            <h3 className="text-xl font-bold text-[#0b2b4b] mb-1">Développement Web</h3>
+            <p className="text-sm text-[#4a5b6e] mb-5">Conception et développement d&apos;applications web modernes et performantes.</p>
 
-function SectionBlock({ title, icon, skills }: { title: string; icon: string; skills: { id: number; name: string; level: number; logo: string | null; category: string | null }[] }) {
-  const isSoft = skills[0]?.category === 'soft';
-  return (
-    <section className="pb-16">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center gap-3 mb-8">
-          <span className="text-2xl">{icon}</span>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{title}</h2>
-        </div>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
-          {skills.map((s) =>
-            isSoft ? <SoftSkillCard key={s.id} name={s.name} /> : <SkillBadge key={s.id} name={s.name} level={s.level} logo={s.logo} />
-          )}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function inferCategory(name: string): string | null {
-  const n = name.toLowerCase();
-  const web = ['php', 'javascript', 'typescript', 'html', 'css', 'react', 'vue', 'next.js', 'tailwind', 'mysql', 'rest api', 'sql', 'laravel', 'spring', 'java', 'backend', 'frontend'];
-  const mobile = ['flutter', 'dart', 'mobile', 'sqlite'];
-  const cloud = ['docker', 'kubernetes', 'k8s', 'aws', 'ecr', 'ci/cd', 'github action', 'linux', 'devops', 'cloud', 'containeurisation', 'déploiement'];
-  const tools = ['git', 'github', 'postman', 'vs code', 'intellij', 'android studio', 'uml', 'plantuml', 'postgresql', 'redis', 'rabbitmq'];
-  const softSkills = ['résolution', 'analyse', 'autonomie', 'apprentissage', 'adaptabilité', 'rigueur', 'innovation', 'équipe', 'communication', 'collaboration', 'créativité'];
-  if (softSkills.some((k) => n.includes(k))) return 'soft';
-  if (web.some((k) => n.includes(k))) return 'web';
-  if (mobile.some((k) => n.includes(k))) return 'mobile';
-  if (cloud.some((k) => n.includes(k))) return 'cloud';
-  if (tools.some((k) => n.includes(k))) return 'tools';
-  return null;
-}
-
-export default async function SkillsPage() {
-  const allSkills = await getSkills();
-
-  const categorized = allSkills.map((s) => ({
-    ...s,
-    category: s.category ?? inferCategory(s.name),
-  }));
-
-  const web = categorized.filter((s) => s.category === 'web');
-  const mobile = categorized.filter((s) => s.category === 'mobile');
-  const cloud = categorized.filter((s) => s.category === 'cloud');
-  const tools = categorized.filter((s) => s.category === 'tools');
-  const soft = categorized.filter((s) => s.category === 'soft');
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-primary/5 dark:from-gray-950 dark:via-gray-900 dark:to-primary/10">
-      <section className="py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary border border-primary/20 text-sm font-medium mb-6">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
-              Expertise technique &amp; humaine
+            <div className="mb-4">
+              <div className="text-xs font-bold uppercase tracking-wider text-[#6b7f94] mb-2">FRONTEND</div>
+              <SkillBar label="HTML5" percent={90} />
+              <SkillBar label="CSS3 / Tailwind CSS" percent={85} />
+              <SkillBar label="JavaScript (ES6+)" percent={85} />
+              <SkillBar label="Vue.js / React / Next.js" percent={80} />
+              <SkillBar label="Alpine.js" percent={70} />
             </div>
-            <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-6">
-              Mes{' '}
-              <span className="bg-gradient-to-r from-primary to-purple-500 bg-clip-text text-transparent">
-                compétences
-              </span>
-            </h1>
-            <p className="text-xl text-gray-600 dark:text-gray-400 max-w-4xl mx-auto leading-relaxed">
-              Un écosystème de compétences orienté vers la construction de solutions complètes, du frontend jusqu&apos;au cloud.
-            </p>
-          </div>
-        </div>
-      </section>
 
-      {web.length > 0 && <SectionBlock title="Développement Web" icon="💻" skills={web} />}
-      {mobile.length > 0 && <SectionBlock title="Développement Mobile" icon="📱" skills={mobile} />}
-      {cloud.length > 0 && (
-        <SectionBlock title="Cloud Computing & DevOps" icon="☁️" skills={cloud} />
-      )}
-      {tools.length > 0 && <SectionBlock title="Outils & Technologies" icon="🧰" skills={tools} />}
-      {soft.length > 0 && <SectionBlock title="Soft Skills" icon="🧠" skills={soft} />}
+            <div>
+              <div className="text-xs font-bold uppercase tracking-wider text-[#6b7f94] mb-2">BACKEND</div>
+              <SkillBar label="Java / Spring Boot" percent={90} />
+              <SkillBar label="PHP / Laravel / Livewire" percent={85} />
+              <SkillBar label="API REST" percent={90} />
+              <SkillBar label="Spring Security / JWT" percent={80} />
+            </div>
+          </div>
+
+          {/* 02 – Développement Mobile */}
+          <div className="bg-white rounded-[20px] p-7 sm:p-8 shadow-[0_8px_24px_rgba(0,20,40,0.06)] hover:shadow-[0_16px_32px_rgba(0,20,40,0.08)] hover:-translate-y-1 transition-all duration-200">
+            <div className="text-4xl font-bold text-[#cbd5e1] tracking-tight mb-1">02</div>
+            <h3 className="text-xl font-bold text-[#0b2b4b] mb-1">Développement Mobile</h3>
+            <p className="text-sm text-[#4a5b6e] mb-5">Création d&apos;applications mobiles fluides et intuitives.</p>
+
+            <SkillBar label="Flutter" percent={85} />
+            <SkillBar label="Dart" percent={80} />
+            <SkillBar label="Consommation API REST" percent={85} />
+            <SkillBar label="SQLite" percent={70} />
+            <SkillBar label="UI/UX Mobile" percent={75} />
+            <SkillBar label="Intégration Backend" percent={80} />
+          </div>
+
+          {/* 03 – Cloud Computing & DevOps */}
+          <div className="bg-white rounded-[20px] p-7 sm:p-8 shadow-[0_8px_24px_rgba(0,20,40,0.06)] hover:shadow-[0_16px_32px_rgba(0,20,40,0.08)] hover:-translate-y-1 transition-all duration-200">
+            <div className="text-4xl font-bold text-[#cbd5e1] tracking-tight mb-1">03</div>
+            <h3 className="text-xl font-bold text-[#0b2b4b] mb-1">Cloud Computing &amp; DevOps</h3>
+            <p className="text-sm text-[#4a5b6e] mb-5">Déploiement, automatisation et gestion d&apos;infrastructures cloud.</p>
+
+            <SkillBar label="Docker" percent={90} />
+            <SkillBar label="Kubernetes" percent={85} />
+            <SkillBar label="AWS (Services)" percent={85} />
+            <SkillBar label="CI/CD (GitHub Actions)" percent={85} />
+            <SkillBar label="Amazon ECR" percent={80} />
+            <SkillBar label="Linux (Ubuntu)" percent={85} />
+            <SkillBar label="Surveillance &amp; Logs" percent={70} />
+          </div>
+
+          {/* 04 – Outils & Technologies */}
+          <div className="bg-white rounded-[20px] p-7 sm:p-8 shadow-[0_8px_24px_rgba(0,20,40,0.06)] hover:shadow-[0_16px_32px_rgba(0,20,40,0.08)] hover:-translate-y-1 transition-all duration-200">
+            <div className="text-4xl font-bold text-[#cbd5e1] tracking-tight mb-1">04</div>
+            <h3 className="text-xl font-bold text-[#0b2b4b] mb-1">Outils &amp; Technologies</h3>
+            <p className="text-sm text-[#4a5b6e] mb-5">Outils et technologies que j&apos;utilise au quotidien pour développer et déployer.</p>
+
+            <div className="flex flex-wrap gap-2">
+              {['Git', 'GitHub', 'IntelliJ IDEA', 'VS Code', 'MySQL', 'PostgreSQL', 'RabbitMQ', 'PlantUML', 'Windows Server', 'Linux', 'Nginx'].map((tool) => (
+                <span key={tool} className="bg-[#f0f4fa] px-3.5 py-1 rounded-full text-sm font-medium text-[#1e2a3a]">
+                  {tool}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          {/* 05 – Compétences Humaines */}
+          <div className="bg-white rounded-[20px] p-7 sm:p-8 shadow-[0_8px_24px_rgba(0,20,40,0.06)] hover:shadow-[0_16px_32px_rgba(0,20,40,0.08)] hover:-translate-y-1 transition-all duration-200 md:col-span-2">
+            <div className="text-4xl font-bold text-[#cbd5e1] tracking-tight mb-1">05</div>
+            <h3 className="text-xl font-bold text-[#0b2b4b] mb-1">Compétences Humaines</h3>
+            <p className="text-sm text-[#4a5b6e] mb-5">Des soft skills essentielles pour mener à bien les projets et collaborer efficacement.</p>
+
+            <div className="flex flex-wrap gap-2">
+              {['Résolution de problèmes', "Esprit d'analyse", 'Autonomie', 'Apprentissage continu', 'Rigueur', "Esprit d'innovation", 'Travail en équipe', 'Communication technique', 'Gestion des priorités'].map((skill) => (
+                <span key={skill} className="bg-[#f0f4fa] px-3.5 py-1 rounded-full text-sm font-medium text-[#1e2a3a]">
+                  {skill}
+                </span>
+              ))}
+            </div>
+          </div>
+
+        </div>
+
+        {/* ========== BANDEAU ========== */}
+        <div className="text-center bg-white rounded-[20px] p-8 shadow-[0_8px_24px_rgba(0,20,40,0.04)] mb-12">
+          <p className="text-lg font-medium text-[#0b2b4b]">
+            <span className="text-[#0077b6]">Toujours en quête d&apos;apprendre et de créer !</span>
+            <br />
+            Je m&apos;efforce chaque jour d&apos;améliorer mes compétences et d&apos;explorer de nouvelles technologies pour construire des solutions innovantes.
+          </p>
+        </div>
+
+        {/* ========== STATISTIQUES ========== */}
+        <div className="flex flex-wrap justify-around gap-6 bg-white rounded-[20px] p-8 shadow-[0_8px_24px_rgba(0,20,40,0.04)]">
+          <StatItem number="50+" label="Projets réalisés" />
+          <StatItem number="3+" label="Années d'expérience" />
+          <StatItem number="20+" label="Technologies maîtrisées" />
+          <StatItem number="100%" label="Passionné" />
+        </div>
+
+      </div>
+    </div>
+  );
+}
+
+function SkillBar({ label, percent }: { label: string; percent: number }) {
+  return (
+    <div className="mb-2">
+      <div className="flex items-center justify-between text-sm py-0.5">
+        <span className="font-medium text-[#1e2a3a]">{label}</span>
+        <span className="font-semibold text-[#0b2b4b] bg-[#eef2f7] px-2.5 py-0.5 rounded-full text-xs">
+          {percent}%
+        </span>
+      </div>
+      <div className="w-full h-[5px] bg-[#e9edf2] rounded-full">
+        <div
+          className="h-full bg-[#0077b6] rounded-full transition-all duration-500"
+          style={{ width: `${percent}%` }}
+        />
+      </div>
+    </div>
+  );
+}
+
+function StatItem({ number, label }: { number: string; label: string }) {
+  return (
+    <div className="text-center min-w-[120px]">
+      <div className="text-4xl sm:text-5xl font-bold text-[#0b2b4b] leading-tight">{number}</div>
+      <div className="text-sm sm:text-base text-[#4a5b6e] font-medium">{label}</div>
     </div>
   );
 }
