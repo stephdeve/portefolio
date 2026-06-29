@@ -70,7 +70,7 @@ export async function processImageUpload(
   const name = `uploads/${Math.floor(Date.now() / 1000)}_${crypto.randomBytes(8).toString('hex')}.jpg`;
   try {
     const blob = await put(name, output, {
-      access: 'public',
+      access: 'private',
       contentType: 'image/jpeg',
     });
     return { imagePath: blob.url };
