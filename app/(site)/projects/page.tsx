@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { getProjects } from '@/lib/data';
 import { assetUrl } from '@/lib/url';
 import { FallbackImage } from '@/components/ProfileImage';
@@ -87,7 +88,16 @@ export default async function ProjectsPage() {
                         </span>
                       ))}
                     </div>
-                    <div className="flex gap-3">
+                    <div className="flex flex-wrap gap-3">
+                      <Link
+                        href={`/projects/${project.id}`}
+                        className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-primary/30 text-primary hover:bg-primary/5 transition-all duration-200 text-sm font-medium"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                          <path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        Voir plus
+                      </Link>
                       {project.github && (
                         <a
                           className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all duration-200 text-sm font-medium"
