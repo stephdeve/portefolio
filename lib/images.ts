@@ -72,7 +72,7 @@ export async function processImageUpload(
       access: 'private',
       contentType: 'image/jpeg',
     });
-    return { imagePath: blob.downloadUrl };
+    return { imagePath: blob.pathname };
   } catch (err) {
     console.error('Blob upload error:', err);
     throw new ImageError("Impossible d'enregistrer l'image.");
@@ -82,10 +82,9 @@ export async function processImageUpload(
 /** Deletes a previously uploaded Blob image. No-op for non-blob paths. */
 export async function deleteUpload(imagePath: string | null | undefined): Promise<void> {
   if (!imagePath) return;
-  // Only attempt to delete Vercel Blob URLs.
-  if (!/^https?:\/\//i.test(imagePath)) return;
   if (!process.env.BLOB_READ_WRITE_TOKEN) return;
   try {
+    // Pathname (uploads/...) or full URL are both accepted by del()
     await del(imagePath);
   } catch (err) {
     console.error('Blob delete error:', err);
