@@ -17,7 +17,6 @@ export async function updateProfileImage(formData: FormData): Promise<void> {
   const alt = String(formData.get('image_alt') ?? '').trim() || null;
   const file = formData.get('image');
 
-  // No new file: update the alt text only.
   if (!(file instanceof File) || file.size === 0) {
     await setSetting('home.profile_image_alt', alt);
     revalidatePath('/');
@@ -31,7 +30,6 @@ export async function updateProfileImage(formData: FormData): Promise<void> {
     flash('err', e instanceof ImageError ? e.message : 'Erreur lors du traitement.');
   }
 
-  // Remove the previous uploaded image.
   const previous = await getSetting('home.profile_image');
   if (previous) await deleteUpload(previous);
 
@@ -40,4 +38,36 @@ export async function updateProfileImage(formData: FormData): Promise<void> {
 
   revalidatePath('/');
   flash('ok', 'Photo mise à jour.');
+}
+
+export async function updateHomeContent(formData: FormData): Promise<void> {
+  await requireAdmin();
+
+  const fields = [
+    'home.hero_badge',
+    'home.hero_title_line1',
+    'home.hero_title_line2',
+    'home.profile_name',
+    'home.profile_title',
+    'home.about_title',
+    'home.about_text',
+    'home.about_interests_heading',
+    'home.about_interests',
+    'home.about_footer',
+    'home.quote_text',
+    'home.offer_title',
+    'home.offer_subtitle',
+    'home.offer_items',
+    'home.stats',
+    'home.meta_title',
+    'home.meta_description',
+  ];
+
+  for (const key of fields) {
+    const value = formData.get(key);
+    await setSetting(key, value ? String(value).trim() : null);
+  }
+
+  revalidatePath('/');
+  flash('ok', 'Contenu de la page d\'accueil mis à jour.');
 }

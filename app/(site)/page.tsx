@@ -3,24 +3,95 @@ import { getSetting } from '@/lib/data';
 import { assetUrl } from '@/lib/url';
 import { FallbackImage } from '@/components/ProfileImage';
 
-export const metadata = {
-  title: 'Développeur Web & Mobile - Portfolio',
-  description: "Portfolio d’un développeur web et mobile spécialisé Cloud & DevOps : projets, compétences et contact.",
-};
-
 export const dynamic = 'force-dynamic';
 
+export async function generateMetadata() {
+  const title = await getSetting('home.meta_title');
+  const description = await getSetting('home.meta_description');
+  return {
+    title: title ?? 'Développeur Web & Mobile - Portfolio',
+    description: description ?? "Portfolio d'un développeur web et mobile spécialisé Cloud & DevOps : projets, compétences et contact.",
+  };
+}
+
+function s(v: string | null, fallback: string): string {
+  return v ?? fallback;
+}
+
+function parseJSON<T>(v: string | null, fallback: T): T {
+  if (!v) return fallback;
+  try {
+    return JSON.parse(v) as T;
+  } catch {
+    return fallback;
+  }
+}
+
 export default async function HomePage() {
-  const [profileImage, imageAltRaw] = await Promise.all([
-    getSetting('home.profile_image'),
-    getSetting('home.profile_image_alt'),
+  const settings: Record<string, string | null> = {};
+  const keys = [
+    'home.profile_image',
+    'home.profile_image_alt',
+    'home.hero_badge',
+    'home.hero_title_line1',
+    'home.hero_title_line2',
+    'home.profile_name',
+    'home.profile_title',
+    'home.about_title',
+    'home.about_text',
+    'home.about_interests_heading',
+    'home.about_interests',
+    'home.about_footer',
+    'home.quote_text',
+    'home.offer_title',
+    'home.offer_subtitle',
+    'home.offer_items',
+    'home.stats',
+    'home.meta_title',
+    'home.meta_description',
+  ];
+  for (const k of keys) {
+    settings[k] = await getSetting(k);
+  }
+
+  const heroBadge = s(settings['home.hero_badge'], 'Web • Mobile • Cloud • DevOps');
+  const heroLine1 = s(settings['home.hero_title_line1'], 'Développeur web et mobile,');
+  const heroLine2 = s(settings['home.hero_title_line2'], 'ingénieur en Cloud Computing & DevOps');
+  const profileName = s(settings['home.profile_name'], 'Stéphane Steven TOSSOUGBE');
+  const profileTitle = s(settings['home.profile_title'], 'Développeur Web & Mobile • Cloud & DevOps');
+  const aboutTitle = s(settings['home.about_title'], 'Qui suis-je ?');
+  const aboutText = s(settings['home.about_text'], '');
+  const aboutInterestsHeading = s(settings['home.about_interests_heading'], 'Je m\'intéresse particulièrement à');
+  const aboutInterests = parseJSON<{ icon?: string; label: string }[]>(settings['home.about_interests'], [
+    { label: 'Architectures modernes et maintenables' },
+    { label: 'API robustes et sécurisées' },
+    { label: 'Déploiement cloud et conteneurisation' },
+    { label: 'Optimisation des systèmes et performances' },
   ]);
-  const imageAlt = imageAltRaw || 'Photo professionnelle';
-  // Use the uploaded image (Vercel Blob) if set, otherwise the shipped default.
-  const imgSrc = profileImage ? assetUrl(profileImage) : '/assets/images/profile.jpg';
+  const aboutFooter = s(settings['home.about_footer'], '');
+  const quoteText = s(settings['home.quote_text'], '« Le code est une poésie qui transforme l\'imagination en une réalité »');
+  const offerTitle = s(settings['home.offer_title'], 'Ce que j\'apporte');
+  const offerSubtitle = s(settings['home.offer_subtitle'], '');
+  const offerItems = parseJSON<{ title: string; description: string }[]>(settings['home.offer_items'], [
+    { title: 'Backend solide', description: 'APIs fiables, sécurité, performance et robustesse orientées produit.' },
+    { title: 'Web & Mobile', description: 'Expérience cohérente du web au mobile, centrée sur l\'utilisateur.' },
+    { title: 'DevOps & CI/CD', description: 'Automatisation, déploiements fiables, observabilité et cloud-ready.' },
+  ]);
+  const stats = parseJSON<{ number: string; label: string }[]>(settings['home.stats'], [
+    { number: '5+', label: "Ans d'expérience" },
+    { number: '50+', label: 'Projets livrés' },
+    { number: '15+', label: 'Technologies' },
+    { number: '100%', label: 'Satisfaction' },
+  ]);
+
+  const imageAlt = s(settings['home.profile_image_alt'], 'Photo professionnelle');
+  const imgSrc = settings['home.profile_image']
+    ? assetUrl(settings['home.profile_image'])
+    : '/assets/images/profile.jpg';
 
   return (
     <>
+      {/* ========== HERO ========== */}
       <section className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
@@ -29,14 +100,14 @@ export default async function HomePage() {
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                   <path d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
-                Web • Mobile • Cloud • DevOps
+                {heroBadge}
               </div>
               <h1 className="text-4xl lg:text-6xl font-bold text-gray-900 dark:text-white mb-8">
                 <span className="bg-gradient-to-r from-primary to-purple-500 bg-clip-text text-transparent">
-                  Développeur web et mobile,
+                  {heroLine1}
                 </span>
                 <br />
-                ingénieur en Cloud Computing &amp; DevOps
+                {heroLine2}
               </h1>
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link
@@ -74,22 +145,17 @@ export default async function HomePage() {
                 </div>
                 <div className="text-center space-y-1 mb-6">
                   <h3 className="text-xl font-bold text-gray-900 dark:text-white">
-                    Stéphane Steven TOSSOUGBE
+                    {profileName}
                   </h3>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
-                    Développeur Web &amp; Mobile • Cloud &amp; DevOps
+                    {profileTitle}
                   </p>
                 </div>
                 <div className="grid grid-cols-2 gap-6">
-                  {[
-                    ['5+', "Ans d'expérience"],
-                    ['50+', 'Projets livrés'],
-                    ['15+', 'Technologies'],
-                    ['100%', 'Satisfaction'],
-                  ].map(([value, label]) => (
-                    <div className="text-center" key={label}>
-                      <div className="text-3xl font-bold text-primary mb-2">{value}</div>
-                      <div className="text-sm text-gray-600 dark:text-gray-400">{label}</div>
+                  {stats.map((stat) => (
+                    <div className="text-center" key={stat.label}>
+                      <div className="text-3xl font-bold text-primary mb-2">{stat.number}</div>
+                      <div className="text-sm text-gray-600 dark:text-gray-400">{stat.label}</div>
                     </div>
                   ))}
                 </div>
@@ -109,103 +175,81 @@ export default async function HomePage() {
               </svg>
             </div>
             <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">
-              Qui suis-je ?
+              {aboutTitle}
             </h2>
           </div>
 
-          <div className="text-gray-600 dark:text-gray-400 leading-relaxed text-base md:text-lg">
-            <p>
-              Développeur web et mobile, orienté Cloud Computing &amp; DevOps, spécialisé dans la conception d&apos;applications modernes, le développement d&apos;API et le déploiement cloud. Passionné par l&apos;architecture logicielle et l&apos;automatisation des systèmes, je construis des solutions évolutives et performantes.
-            </p>
-          </div>
-
-          <div className="mt-6">
-            <h3 className="text-sm font-bold uppercase tracking-widest text-primary/70 dark:text-primary/50 mb-4">
-              Je m&apos;intéresse particulièrement à
-            </h3>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
-              {[
-                { icon: 'M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10', label: "Architectures modernes et maintenables" },
-                { icon: 'M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z', label: "API robustes et sécurisées" },
-                { icon: 'M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z', label: "Déploiement cloud et conteneurisation" },
-                { icon: 'M13 10V3L4 14h7v7l9-11h-7z', label: "Optimisation des systèmes et performances" },
-              ].map((item) => (
-                <div key={item.label} className="flex items-start gap-3 p-4 rounded-xl bg-primary/5 dark:bg-primary/10 border border-primary/10">
-                  <svg className="w-5 h-5 text-primary shrink-0 mt-0.5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-                    <path d={item.icon} />
-                  </svg>
-                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{item.label}</span>
-                </div>
-              ))}
+          {aboutText && (
+            <div className="text-gray-600 dark:text-gray-400 leading-relaxed text-base md:text-lg">
+              <p>{aboutText}</p>
             </div>
-          </div>
+          )}
 
-          <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-800">
-            <p className="text-gray-500 dark:text-gray-500 italic text-sm flex items-center gap-2">
-              <svg className="w-4 h-4 text-primary shrink-0" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-                <path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              Toujours en apprentissage, j&apos;évolue en continu pour maîtriser les technologies les plus pertinentes et construire des solutions fiables, modernes et prêtes pour le futur.
-            </p>
-          </div>
+          {aboutInterests.length > 0 && (
+            <div className="mt-6">
+              <h3 className="text-sm font-bold uppercase tracking-widest text-primary/70 dark:text-primary/50 mb-4">
+                {aboutInterestsHeading}
+              </h3>
+              <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                {aboutInterests.map((item) => (
+                  <div key={item.label} className="flex items-start gap-3 p-4 rounded-xl bg-primary/5 dark:bg-primary/10 border border-primary/10">
+                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{item.label}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {aboutFooter && (
+            <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-800">
+              <p className="text-gray-500 dark:text-gray-500 italic text-sm flex items-center gap-2">
+                <svg className="w-4 h-4 text-primary shrink-0" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                  <path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                {aboutFooter}
+              </p>
+            </div>
+          )}
         </div>
       </section>
 
+      {/* ========== CITATION ========== */}
       <section className="max-w-4xl mx-auto px-4 my-16">
         <figure className="text-center animate-fade-in">
           <div className="h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent mb-6" />
           <blockquote className="text-3xl md:text-4xl italic font-semibold">
             <span className="bg-gradient-to-r from-primary to-purple-500 bg-clip-text text-transparent">
-              « Le code est une poésie qui transforme l&apos;imagination en une réalité »
+              {quoteText}
             </span>
           </blockquote>
           <div className="h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent mt-6" />
         </figure>
       </section>
 
-      <section className="max-w-6xl mx-auto px-4 py-16 bg-gray-50 dark:bg-gray-900 rounded-3xl my-16">
-        <div className="text-center mb-12 animate-fade-in">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Ce que j&apos;apporte</h2>
-          <p className="text-lg text-gray-600 dark:text-gray-400">
-            Du backend solide, des apps web &amp; mobile de qualité, et des déploiements maîtrisés.
-          </p>
-        </div>
-        <div className="grid md:grid-cols-3 gap-8">
-          <div className="text-center animate-slide-up" style={{ animationDelay: '0.1s' }}>
-            <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg className="w-8 h-8 text-primary" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-                <path d="M3 7h18M3 12h12M3 17h18" />
-              </svg>
-            </div>
-            <h3 className="text-xl font-semibold mb-2">Backend solide</h3>
-            <p className="text-gray-600 dark:text-gray-400">
-              APIs fiables, sécurité, performance et robustesse orientées produit.
-            </p>
+      {/* ========== CE QUE J'APPORTE ========== */}
+      {offerItems.length > 0 && (
+        <section className="max-w-6xl mx-auto px-4 py-16 bg-gray-50 dark:bg-gray-900 rounded-3xl my-16">
+          <div className="text-center mb-12 animate-fade-in">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">{offerTitle}</h2>
+            {offerSubtitle && (
+              <p className="text-lg text-gray-600 dark:text-gray-400">{offerSubtitle}</p>
+            )}
           </div>
-          <div className="text-center animate-slide-up" style={{ animationDelay: '0.2s' }}>
-            <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg className="w-8 h-8 text-primary" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-                <path d="M7 2h10a2 2 0 012 2v16a2 2 0 01-2 2H7a2 2 0 01-2-2V4a2 2 0 012-2zM12 18h.01" />
-              </svg>
-            </div>
-            <h3 className="text-xl font-semibold mb-2">Web &amp; Mobile</h3>
-            <p className="text-gray-600 dark:text-gray-400">
-              Expérience cohérente du web au mobile, centrée sur l&apos;utilisateur.
-            </p>
+          <div className="grid md:grid-cols-3 gap-8">
+            {offerItems.map((item, i) => (
+              <div key={item.title} className="text-center animate-slide-up" style={{ animationDelay: `${(i + 1) * 0.1}s` } as React.CSSProperties}>
+                <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <svg className="w-8 h-8 text-primary" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                    <path d={['M3 7h18M3 12h12M3 17h18', 'M7 2h10a2 2 0 012 2v16a2 2 0 01-2 2H7a2 2 0 01-2-2V4a2 2 0 012-2zM12 18h.01', 'M3 13h18M12 3v18M8 21h8'][i] || 'M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4'} />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-semibold mb-2">{item.title}</h3>
+                <p className="text-gray-600 dark:text-gray-400">{item.description}</p>
+              </div>
+            ))}
           </div>
-          <div className="text-center animate-slide-up" style={{ animationDelay: '0.3s' }}>
-            <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg className="w-8 h-8 text-primary" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-                <path d="M3 13h18M12 3v18M8 21h8" />
-              </svg>
-            </div>
-            <h3 className="text-xl font-semibold mb-2">DevOps &amp; CI/CD</h3>
-            <p className="text-gray-600 dark:text-gray-400">
-              Automatisation, déploiements fiables, observabilité et cloud-ready.
-            </p>
-          </div>
-        </div>
-      </section>
+        </section>
+      )}
     </>
   );
 }
