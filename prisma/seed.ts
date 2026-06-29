@@ -11,10 +11,14 @@ async function main() {
       ['JavaScript', 90],
       ['MySQL', 85],
       ['HTML5/CSS3', 92],
-      ['Git', 88],
-      ['Docker', 75],
-      ['Linux', 80],
       ['REST APIs', 85],
+      ['Git', 88],
+      ['Linux', 80],
+      ['Docker', 80],
+      ['Kubernetes', 65],
+      ['AWS', 70],
+      ['GitHub Actions', 75],
+      ['CI/CD', 80],
     ];
     await prisma.skill.createMany({
       data: skills.map(([name, level]) => ({ name, level })),
