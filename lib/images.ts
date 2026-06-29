@@ -72,7 +72,7 @@ export async function processImageUpload(
       access: 'private',
       contentType: 'image/jpeg',
     });
-    return { imagePath: blob.url };
+    return { imagePath: blob.downloadUrl };
   } catch (err) {
     console.error('Blob upload error:', err);
     throw new ImageError("Impossible d'enregistrer l'image.");
