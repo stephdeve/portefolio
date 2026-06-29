@@ -17,6 +17,7 @@ export interface SkillView {
   name: string;
   level: number;
   logo: string | null;
+  category: string | null;
 }
 
 /** Normalises the Json stack column to a string[]. */
@@ -96,7 +97,7 @@ export async function getSkills(): Promise<SkillView[]> {
   const rows = await prisma.skill.findMany({
     orderBy: [{ level: 'desc' }, { name: 'asc' }],
   });
-  return rows.map((s) => ({ id: s.id, name: s.name, level: s.level, logo: s.logo }));
+  return rows.map((s) => ({ id: s.id, name: s.name, level: s.level, logo: s.logo, category: s.category }));
 }
 
 export async function getTopSkills(limit: number): Promise<SkillView[]> {
@@ -104,7 +105,7 @@ export async function getTopSkills(limit: number): Promise<SkillView[]> {
     orderBy: [{ level: 'desc' }, { name: 'asc' }],
     take: limit,
   });
-  return rows.map((s) => ({ id: s.id, name: s.name, level: s.level, logo: s.logo }));
+  return rows.map((s) => ({ id: s.id, name: s.name, level: s.level, logo: s.logo, category: s.category }));
 }
 
 export async function getSetting(key: string): Promise<string | null> {

@@ -27,10 +27,11 @@ model Project {
 }
 
 model Skill {
-  id    Int     @id @default(autoincrement())
-  name  String
-  level Int
-  logo  String?
+  id       Int     @id @default(autoincrement())
+  name     String
+  level    Int
+  logo     String?
+  category String?
 
   @@map("skills")
 }

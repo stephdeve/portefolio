@@ -2,23 +2,52 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-// Mirrors the original PHP Migrator::seed() — only seeds when tables are empty.
 async function main() {
   const skillCount = await prisma.skill.count();
   if (skillCount === 0) {
-    const skills: { name: string; level: number; logo: string | null }[] = [
-      { name: 'PHP', level: 95, logo: 'php' },
-      { name: 'JavaScript', level: 90, logo: 'javascript' },
-      { name: 'MySQL', level: 85, logo: 'mysql' },
-      { name: 'HTML5/CSS3', level: 92, logo: 'html' },
-      { name: 'REST APIs', level: 85, logo: 'rest' },
-      { name: 'Git', level: 88, logo: 'git' },
-      { name: 'Linux', level: 80, logo: 'linux' },
-      { name: 'Docker', level: 80, logo: 'docker' },
-      { name: 'Kubernetes', level: 65, logo: 'kubernetes' },
-      { name: 'AWS', level: 70, logo: 'aws' },
-      { name: 'GitHub Actions', level: 75, logo: 'github' },
-      { name: 'CI/CD', level: 80, logo: 'cicd' },
+    const skills: { name: string; level: number; logo: string; category: string }[] = [
+      // 💻 Développement Web
+      { name: 'HTML5 / CSS3', level: 92, logo: 'html', category: 'web' },
+      { name: 'JavaScript', level: 90, logo: 'javascript', category: 'web' },
+      { name: 'React / Next.js', level: 78, logo: 'react', category: 'web' },
+      { name: 'TypeScript', level: 75, logo: 'typescript', category: 'web' },
+      { name: 'Tailwind CSS', level: 85, logo: 'tailwind', category: 'web' },
+      { name: 'PHP', level: 95, logo: 'php', category: 'web' },
+      { name: 'MySQL', level: 85, logo: 'mysql', category: 'web' },
+      { name: 'REST APIs', level: 88, logo: 'rest', category: 'web' },
+
+      // 📱 Développement Mobile
+      { name: 'Flutter / Dart', level: 72, logo: 'figma', category: 'mobile' },
+      { name: 'SQLite', level: 70, logo: 'database', category: 'mobile' },
+      { name: 'API mobile', level: 80, logo: 'rest', category: 'mobile' },
+      { name: 'UI responsive mobile', level: 75, logo: 'figma', category: 'mobile' },
+
+      // ☁️ Cloud & DevOps
+      { name: 'Docker', level: 80, logo: 'docker', category: 'cloud' },
+      { name: 'Kubernetes', level: 65, logo: 'kubernetes', category: 'cloud' },
+      { name: 'AWS', level: 70, logo: 'aws', category: 'cloud' },
+      { name: 'CI/CD (GitHub Actions)', level: 75, logo: 'github', category: 'cloud' },
+      { name: 'Linux', level: 80, logo: 'linux', category: 'cloud' },
+
+      // 🧰 Outils & Technologies
+      { name: 'Git / GitHub', level: 88, logo: 'git', category: 'tools' },
+      { name: 'VS Code', level: 90, logo: 'figma', category: 'tools' },
+      { name: 'Postman', level: 82, logo: 'rest', category: 'tools' },
+      { name: 'Docker Desktop', level: 80, logo: 'docker', category: 'tools' },
+      { name: 'UML / PlantUML', level: 75, logo: 'figma', category: 'tools' },
+      { name: 'Redis', level: 68, logo: 'database', category: 'tools' },
+      { name: 'PostgreSQL', level: 78, logo: 'database', category: 'tools' },
+
+      // 🧠 Soft Skills
+      { name: 'Résolution de problèmes', level: 0, logo: '', category: 'soft' },
+      { name: 'Esprit d\'analyse', level: 0, logo: '', category: 'soft' },
+      { name: 'Autonomie', level: 0, logo: '', category: 'soft' },
+      { name: 'Apprentissage continu', level: 0, logo: '', category: 'soft' },
+      { name: 'Adaptabilité', level: 0, logo: '', category: 'soft' },
+      { name: 'Rigueur', level: 0, logo: '', category: 'soft' },
+      { name: 'Esprit d\'innovation', level: 0, logo: '', category: 'soft' },
+      { name: 'Travail en équipe', level: 0, logo: '', category: 'soft' },
+      { name: 'Communication technique', level: 0, logo: '', category: 'soft' },
     ];
     await prisma.skill.createMany({ data: skills });
     console.log(`Seeded ${skills.length} skills.`);

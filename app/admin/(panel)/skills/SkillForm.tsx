@@ -4,6 +4,14 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { skillIcons, getIcon } from '@/lib/icons';
 
+const CATEGORIES = [
+  { value: 'web', label: '💻 Développement Web' },
+  { value: 'mobile', label: '📱 Développement Mobile' },
+  { value: 'cloud', label: '☁️ Cloud & DevOps' },
+  { value: 'tools', label: '🧰 Outils & Technologies' },
+  { value: 'soft', label: '🧠 Soft Skills' },
+];
+
 type Action = (formData: FormData) => void | Promise<void>;
 
 export function SkillForm({
@@ -11,7 +19,7 @@ export function SkillForm({
   skill,
 }: {
   action: Action;
-  skill: { id: number | null; name: string; level: number; logo: string | null };
+  skill: { id: number | null; name: string; level: number; logo: string | null; category: string | null };
 }) {
   const [level, setLevel] = useState(skill.level);
   const [selectedIcon, setSelectedIcon] = useState(skill.logo ?? '');
@@ -43,6 +51,23 @@ export function SkillForm({
               required
               placeholder="Ex: PHP, JavaScript, MySQL..."
             />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" htmlFor="category">
+              Catégorie
+            </label>
+            <select
+              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition"
+              name="category"
+              id="category"
+              defaultValue={skill.category ?? ''}
+            >
+              <option value="">Non catégorisé</option>
+              {CATEGORIES.map((c) => (
+                <option key={c.value} value={c.value}>{c.label}</option>
+              ))}
+            </select>
           </div>
 
           <div>
