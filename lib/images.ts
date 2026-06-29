@@ -1,4 +1,3 @@
-import 'server-only';
 import crypto from 'crypto';
 import sharp from 'sharp';
 import { put, del } from '@vercel/blob';
