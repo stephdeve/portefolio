@@ -8,9 +8,9 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Person',
-    name: appName,
+    name: config.owner.name || appName,
     url: config.app.baseUrl,
-    jobTitle: 'Développeur PHP',
+    jobTitle: config.owner.headline || 'Développeur Web & Mobile • Cloud & DevOps',
     description: config.app.description,
   };
 
@@ -21,8 +21,11 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
+      <a href="#main-content" className="skip-link">
+        Aller au contenu
+      </a>
       <Header appName={appName} />
-      <main className="min-h-[70vh]">{children}</main>
+      <main id="main-content" className="min-h-[70vh]">{children}</main>
       <Footer appName={appName} />
     </>
   );

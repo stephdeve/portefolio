@@ -7,7 +7,8 @@ import { ADMIN_COOKIE_NAME, verifySessionToken } from './auth';
 
 /** Returns the logged-in admin username, or null. */
 export async function getAdminUser(): Promise<string | null> {
-  const token = cookies().get(ADMIN_COOKIE_NAME)?.value;
+  const cookieStore = await cookies();
+  const token = cookieStore.get(ADMIN_COOKIE_NAME)?.value;
   return verifySessionToken(token);
 }
 

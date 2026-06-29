@@ -11,6 +11,11 @@ function s(v: string | null, fallback = ''): string {
   return v ?? fallback;
 }
 
+function parseJSON<T>(v: string | null, fallback: T): T {
+  if (!v) return fallback;
+  try { return JSON.parse(v) as T; } catch { return fallback; }
+}
+
 export default async function AdminSettingsPage({
   searchParams,
 }: {
@@ -46,25 +51,28 @@ export default async function AdminSettingsPage({
     ? assetUrl(settings['home.profile_image'])
     : '/assets/images/profile.jpg';
 
-  const defaultInterests = JSON.stringify([
+  const defaultInterests = [
     { label: 'Architectures modernes et maintenables' },
     { label: 'API robustes et sécurisées' },
     { label: 'Déploiement cloud et conteneurisation' },
     { label: 'Optimisation des systèmes et performances' },
-  ], null, 2);
+  ];
+  const interests = parseJSON<{ label: string }[]>(settings['home.about_interests'], defaultInterests);
 
-  const defaultOfferItems = JSON.stringify([
+  const defaultOfferItems = [
     { title: 'Backend solide', description: 'APIs fiables, sécurité, performance et robustesse orientées produit.' },
     { title: 'Web & Mobile', description: 'Expérience cohérente du web au mobile, centrée sur l\'utilisateur.' },
     { title: 'DevOps & CI/CD', description: 'Automatisation, déploiements fiables, observabilité et cloud-ready.' },
-  ], null, 2);
+  ];
+  const offerItems = parseJSON<{ title: string; description: string }[]>(settings['home.offer_items'], defaultOfferItems);
 
-  const defaultStats = JSON.stringify([
+  const defaultStats = [
     { number: '5+', label: "Ans d'expérience" },
     { number: '50+', label: 'Projets livrés' },
     { number: '15+', label: 'Technologies' },
     { number: '100%', label: 'Satisfaction' },
-  ], null, 2);
+  ];
+  const stats = parseJSON<{ number: string; label: string }[]>(settings['home.stats'], defaultStats);
 
   return (
     <div className="max-w-4xl mx-auto space-y-8">
@@ -201,15 +209,16 @@ export default async function AdminSettingsPage({
                 defaultValue={s(settings['home.about_interests_heading'], 'Je m\'intéresse particulièrement à')}
               />
             </div>
-            <div>
-              <label className="block text-sm font-medium mb-1">
-                Centres d&apos;intérêt <span className="text-gray-400 font-normal">(JSON — tableau d&apos;objets avec `label`)</span>
-              </label>
-              <textarea
-                className="w-full rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 font-mono min-h-[120px]"
-                name="home.about_interests"
-                defaultValue={s(settings['home.about_interests'], defaultInterests)}
-              />
+            <div className="space-y-2">
+              <label className="block text-sm font-medium mb-1">Centres d&apos;intérêt</label>
+              {interests.map((item, i) => (
+                <input key={i}
+                  className="w-full rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
+                  type="text" name={`home.about_interest_${i}`}
+                  defaultValue={item.label}
+                  placeholder={`Intérêt ${i + 1}`}
+                />
+              ))}
             </div>
             <div>
               <label className="block text-sm font-medium mb-1">Pied de section (texte d&apos;apprentissage)</label>
@@ -255,15 +264,25 @@ export default async function AdminSettingsPage({
                 defaultValue={s(settings['home.offer_subtitle'], 'Du backend solide, des apps web & mobile de qualité, et des déploiements maîtrisés.')}
               />
             </div>
-            <div>
-              <label className="block text-sm font-medium mb-1">
-                Éléments <span className="text-gray-400 font-normal">(JSON — tableau avec `title` et `description`)</span>
-              </label>
-              <textarea
-                className="w-full rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 font-mono min-h-[150px]"
-                name="home.offer_items"
-                defaultValue={s(settings['home.offer_items'], defaultOfferItems)}
-              />
+            <div className="space-y-3">
+              <label className="block text-sm font-medium mb-1">Éléments</label>
+              {offerItems.map((item, i) => (
+                <div key={i} className="p-3 rounded-lg border border-gray-200 dark:border-gray-700 space-y-2">
+                  <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Élément {i + 1}</span>
+                  <input
+                    className="w-full rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
+                    type="text" name={`home.offer_item_${i}_title`}
+                    defaultValue={item.title}
+                    placeholder="Titre"
+                  />
+                  <textarea
+                    className="w-full rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 min-h-[60px]"
+                    name={`home.offer_item_${i}_desc`}
+                    defaultValue={item.description}
+                    placeholder="Description"
+                  />
+                </div>
+              ))}
             </div>
           </div>
         </section>
@@ -271,15 +290,23 @@ export default async function AdminSettingsPage({
         {/* STATISTIQUES */}
         <section className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-6">
           <h3 className="text-lg font-semibold mb-4">Statistiques (carte de profil)</h3>
-          <div>
-            <label className="block text-sm font-medium mb-1">
-              Données <span className="text-gray-400 font-normal">(JSON — tableau avec `number` et `label`)</span>
-            </label>
-            <textarea
-              className="w-full rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 font-mono min-h-[150px]"
-              name="home.stats"
-              defaultValue={s(settings['home.stats'], defaultStats)}
-            />
+          <div className="space-y-2">
+            {stats.map((stat, i) => (
+              <div key={i} className="flex gap-2">
+                <input
+                  className="w-24 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
+                  type="text" name={`home.stat_${i}_number`}
+                  defaultValue={stat.number}
+                  placeholder="Nombre"
+                />
+                <input
+                  className="flex-1 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
+                  type="text" name={`home.stat_${i}_label`}
+                  defaultValue={stat.label}
+                  placeholder="Libellé"
+                />
+              </div>
+            ))}
           </div>
         </section>
 

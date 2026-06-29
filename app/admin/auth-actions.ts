@@ -18,11 +18,13 @@ export async function loginAction(_prev: LoginState, formData: FormData): Promis
   }
 
   const token = await createSessionToken(username);
-  cookies().set({ ...sessionCookieOptions, value: token });
+  const cookieStore = await cookies();
+  cookieStore.set({ ...sessionCookieOptions, value: token });
   redirect('/admin');
 }
 
 export async function logoutAction(): Promise<void> {
-  cookies().delete(ADMIN_COOKIE_NAME);
+  const cookieStore = await cookies();
+  cookieStore.delete(ADMIN_COOKIE_NAME);
   redirect('/admin/login');
 }

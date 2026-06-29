@@ -33,7 +33,7 @@ export function ContactForm() {
       <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Envoyez un message</h2>
 
       {state.success && (
-        <div className="mb-6 p-4 rounded-xl border border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300">
+        <div className="mb-6 p-4 rounded-xl border border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300" role="alert">
           <div className="flex items-center gap-2">
             <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
               <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -44,7 +44,7 @@ export function ContactForm() {
       )}
 
       {errors.global && (
-        <div className="mb-6 p-4 rounded-xl border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300">
+        <div className="mb-6 p-4 rounded-xl border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300" role="alert">
           <div className="flex items-center gap-2">
             <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
               <path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
@@ -54,7 +54,13 @@ export function ContactForm() {
         </div>
       )}
 
-      <form action={formAction} className="space-y-6">
+      <form action={formAction} className="space-y-6" noValidate>
+        {/* Honeypot — invisible for humans */}
+        <div className="absolute -left-[9999px]" aria-hidden="true">
+          <label htmlFor="website">Website</label>
+          <input id="website" name="website" type="text" tabIndex={-1} autoComplete="off" />
+        </div>
+
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" htmlFor="name">
             Nom complet
@@ -65,6 +71,7 @@ export function ContactForm() {
             name="name"
             id="name"
             required
+            minLength={2}
             placeholder="Jean Dupont"
             defaultValue={old.name}
           />
@@ -95,6 +102,7 @@ export function ContactForm() {
             id="message"
             rows={5}
             required
+            minLength={10}
             placeholder="Décrivez votre projet ou votre demande..."
             defaultValue={old.message}
           />

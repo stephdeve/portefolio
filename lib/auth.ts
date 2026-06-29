@@ -12,13 +12,13 @@ const MAX_AGE_SECONDS = 60 * 60 * 8; // 8 hours
 export const ADMIN_COOKIE_NAME = COOKIE_NAME;
 
 function getSecret(): string {
-  // Prefer a dedicated secret; fall back to the password hash so the app still
-  // works out of the box once ADMIN_PASS_HASH is set.
-  const secret =
-    process.env.ADMIN_SESSION_SECRET ||
-    process.env.ADMIN_PASS_HASH ||
-    'insecure-dev-secret-change-me';
-  return secret;
+  const secret = process.env.ADMIN_SESSION_SECRET || process.env.ADMIN_PASS_HASH;
+  if (!secret && process.env.NODE_ENV === 'production') {
+    throw new Error(
+      'ADMIN_SESSION_SECRET or ADMIN_PASS_HASH must be set in production.',
+    );
+  }
+  return secret || 'insecure-dev-secret-change-me';
 }
 
 function base64url(bytes: Uint8Array): string {

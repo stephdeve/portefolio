@@ -2,15 +2,22 @@
 @tailwind components;
 @tailwind utilities;
 
-html {
-  font-family: Inter, ui-sans-serif, system-ui;
-  scroll-behavior: smooth;
+@layer base {
+  *:focus-visible {
+    @apply outline-2 outline-offset-2 outline-primary/70;
+  }
 }
 
-/* Limit description to 3 lines (was line-clamp-3 in the PHP views) */
-.line-clamp-3 {
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+@layer utilities {
+  .skip-link {
+    @apply absolute -top-10 left-4 z-[100] bg-primary text-white px-4 py-2 rounded-b-md text-sm font-medium transition-all focus:top-0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

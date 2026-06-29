@@ -1,0 +1,12 @@
+{
+  "name": "Stéphane Steven TOSSOUGBE - Portfolio",
+  "short_name": "Portfolio",
+  "description": "Développeur web & mobile spécialisé Cloud & DevOps",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f9fafb",
+  "theme_color": "#6366F1",
+  "icons": [
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}

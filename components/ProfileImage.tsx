@@ -1,39 +1,44 @@
 'use client';
 
+import { useState } from 'react';
+import Image from 'next/image';
+
 const FALLBACK_IMG =
   'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgdmlld0JveD0iMCAwIDE5MiAxOTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxOTIiIGhlaWdodD0iMTkyIiBmaWxsPSJ1cmwoI2dyYWRpZW50MCkiLz4KPHBhdGggZD0iTTE2IDdhNCA0IDAgMTEtOCAwIDQgNCAwIDAxOCAwWk0xMiAxNGE3IDcgMCAwMC03IDdoMTRhNyA3IDAgMDAtNy03eiIgZmlsbD0iIzYzNjZGMSIgZmlsbC1vcGFjaXR5PSIwLjUiLz4KPHRleHQgeD0iOTYiIHk9IjEwMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzYzNjZGMSIgZmlsbC1vcGFjaXR5PSIwLjciIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCI+UGhvdG88L3RleHQ+Cjwvc3ZnPgo=';
 
-/**
- * <img> with a graceful fallback when the source fails to load.
- * Optionally falls back to `fallbackSrc` first (e.g. a *_thumb.jpg variant),
- * then to an inline placeholder, mirroring the PHP onerror behaviour.
- */
 export function FallbackImage({
   src,
   alt,
   className,
   fallbackSrc,
+  width = 400,
+  height = 400,
 }: {
   src: string;
   alt: string;
   className?: string;
   fallbackSrc?: string;
+  width?: number;
+  height?: number;
 }) {
+  const [imgSrc, setImgSrc] = useState(src);
+  const [triedFallback, setTriedFallback] = useState(false);
+
   return (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img
+    <Image
       className={className}
-      src={src}
+      src={imgSrc}
       alt={alt}
-      onError={(e) => {
-        const img = e.currentTarget;
-        if (fallbackSrc && img.src.indexOf(fallbackSrc) === -1 && !img.dataset.triedFallback) {
-          img.dataset.triedFallback = '1';
-          img.src = fallbackSrc;
-          return;
+      width={width}
+      height={height}
+      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+      onError={() => {
+        if (fallbackSrc && !triedFallback) {
+          setTriedFallback(true);
+          setImgSrc(fallbackSrc);
+        } else {
+          setImgSrc(FALLBACK_IMG);
         }
-        img.onerror = null;
-        img.src = FALLBACK_IMG;
       }}
     />
   );

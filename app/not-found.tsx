@@ -6,6 +6,7 @@ import { config } from '@/lib/config';
 
 export const metadata = {
   title: 'Page introuvable',
+  robots: { index: false },
 };
 
 export default function NotFound() {
