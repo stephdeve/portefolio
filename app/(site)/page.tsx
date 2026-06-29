@@ -29,19 +29,15 @@ export default async function HomePage() {
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                   <path d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
-                Backend-first • Web • Mobile • DevOps
+                Web • Mobile • Cloud • DevOps
               </div>
-              <h1 className="text-4xl lg:text-6xl font-bold text-gray-900 dark:text-white mb-6">
+              <h1 className="text-4xl lg:text-6xl font-bold text-gray-900 dark:text-white mb-8">
                 <span className="bg-gradient-to-r from-primary to-purple-500 bg-clip-text text-transparent">
-                  Développeur polyvalent
+                  Développeur web et mobile,
                 </span>
                 <br />
-                orienté backend, mobile &amp; DevOps
+                ingénieur en Cloud Computing &amp; DevOps
               </h1>
-              <p className="text-xl text-gray-600 dark:text-gray-400 mb-8 leading-relaxed">
-                Je conçois des APIs performantes, des architectures fiables et des déploiements automatisés.
-                Mon focus est le backend, avec une vision produit web &amp; mobile et une culture DevOps.
-              </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link
                   className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-gradient-to-r from-primary to-purple-500 text-white font-semibold hover:opacity-90 transition-opacity shadow-lg"
@@ -81,7 +77,7 @@ export default async function HomePage() {
                     Stéphane Steven TOSSOUGBE
                   </h3>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
-                    Développeur backend • Web • Mobile • DevOps
+                    Développeur Web &amp; Mobile • Cloud &amp; DevOps
                   </p>
                 </div>
                 <div className="grid grid-cols-2 gap-6">
@@ -117,12 +113,9 @@ export default async function HomePage() {
             </h2>
           </div>
 
-          <div className="space-y-4 text-gray-600 dark:text-gray-400 leading-relaxed text-base md:text-lg">
+          <div className="text-gray-600 dark:text-gray-400 leading-relaxed text-base md:text-lg">
             <p>
-              Je suis développeur web et mobile, passionné par la conception de solutions numériques complètes et évolutives. J&apos;interviens aussi sur les environnements Cloud Computing et DevOps, avec une forte orientation vers l&apos;automatisation, la performance et la scalabilité des applications.
-            </p>
-            <p>
-              J&apos;aime transformer des idées en produits concrets : applications web, plateformes mobiles et systèmes cloud bien architecturés. Mon approche repose sur une vision globale du développement, allant de la conception logicielle jusqu&apos;au déploiement en production.
+              Développeur web et mobile, orienté Cloud Computing &amp; DevOps, spécialisé dans la conception d&apos;applications modernes, le développement d&apos;API et le déploiement cloud. Passionné par l&apos;architecture logicielle et l&apos;automatisation des systèmes, je construis des solutions évolutives et performantes.
             </p>
           </div>
 
