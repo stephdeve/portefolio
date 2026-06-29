@@ -1,9 +1,58 @@
+import { getSkills } from '@/lib/data';
+
 export const metadata = {
   title: 'Compétences',
   description: "Un ensemble de compétences pour créer des solutions complètes — développement web, mobile, Cloud & DevOps.",
 };
 
-export default function SkillsPage() {
+export const dynamic = 'force-dynamic';
+
+function inferCategory(name: string): string | null {
+  const n = name.toLowerCase();
+  const web = ['php', 'javascript', 'typescript', 'html', 'css', 'react', 'vue', 'next.js', 'tailwind', 'mysql', 'rest api', 'sql', 'laravel', 'spring', 'java', 'backend', 'frontend', 'alpine.js', 'livewire', 'api'];
+  const mobile = ['flutter', 'dart', 'mobile', 'sqlite', 'ui/ux'];
+  const cloud = ['docker', 'kubernetes', 'k8s', 'aws', 'ecr', 'ci/cd', 'github action', 'linux', 'devops', 'cloud', 'containeurisation', 'déploiement', 'surveillance', 'logs', 'ubuntu', 'nginx'];
+  const tools = ['git', 'github', 'postman', 'vs code', 'intellij', 'android studio', 'uml', 'plantuml', 'postgresql', 'redis', 'rabbitmq', 'mysql', 'windows server'];
+  const softSkills = ['résolution', 'analyse', 'autonomie', 'apprentissage', 'adaptabilité', 'rigueur', 'innovation', 'équipe', 'communication', 'collaboration', 'créativité', 'gestion', 'priorités'];
+  if (softSkills.some((k) => n.includes(k))) return 'soft';
+  if (web.some((k) => n.includes(k))) return 'web';
+  if (mobile.some((k) => n.includes(k))) return 'mobile';
+  if (cloud.some((k) => n.includes(k))) return 'cloud';
+  if (tools.some((k) => n.includes(k))) return 'tools';
+  return null;
+}
+
+const FRONTEND_KEYWORDS = ['html', 'css', 'javascript', 'typescript', 'react', 'vue', 'next.js', 'tailwind', 'alpine.js', 'frontend'];
+const BACKEND_KEYWORDS = ['php', 'java', 'spring', 'laravel', 'livewire', 'api rest', 'backend', 'jwt', 'spring security', 'sql'];
+
+function isFrontend(name: string): boolean {
+  const n = name.toLowerCase();
+  return FRONTEND_KEYWORDS.some((k) => n.includes(k));
+}
+
+function isBackend(name: string): boolean {
+  const n = name.toLowerCase();
+  return BACKEND_KEYWORDS.some((k) => n.includes(k));
+}
+
+export default async function SkillsPage() {
+  const allSkills = await getSkills();
+
+  const categorized = allSkills.map((s) => ({
+    ...s,
+    category: s.category ?? inferCategory(s.name),
+  }));
+
+  const web = categorized.filter((s) => s.category === 'web');
+  const mobile = categorized.filter((s) => s.category === 'mobile');
+  const cloud = categorized.filter((s) => s.category === 'cloud');
+  const tools = categorized.filter((s) => s.category === 'tools');
+  const soft = categorized.filter((s) => s.category === 'soft');
+
+  const webFrontend = web.filter((s) => isFrontend(s.name));
+  const webBackend = web.filter((s) => isBackend(s.name));
+  const webOther = web.filter((s) => !isFrontend(s.name) && !isBackend(s.name));
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-primary/5 dark:from-gray-950 dark:via-gray-900 dark:to-primary/10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
@@ -35,19 +84,27 @@ export default function SkillsPage() {
             desc="Conception et développement d'applications web modernes et performantes."
             delay="0.1s"
           >
-            <SkillGroup title="FRONTEND">
-              <SkillBar label="HTML5" percent={90} />
-              <SkillBar label="CSS3 / Tailwind CSS" percent={85} />
-              <SkillBar label="JavaScript (ES6+)" percent={85} />
-              <SkillBar label="Vue.js / React / Next.js" percent={80} />
-              <SkillBar label="Alpine.js" percent={70} />
-            </SkillGroup>
-            <SkillGroup title="BACKEND">
-              <SkillBar label="Java / Spring Boot" percent={90} />
-              <SkillBar label="PHP / Laravel / Livewire" percent={85} />
-              <SkillBar label="API REST" percent={90} />
-              <SkillBar label="Spring Security / JWT" percent={80} />
-            </SkillGroup>
+            {webFrontend.length > 0 && (
+              <SkillGroup title="FRONTEND">
+                {webFrontend.map((s) => (
+                  <SkillBar key={s.id} label={s.name} percent={s.level} />
+                ))}
+              </SkillGroup>
+            )}
+            {webBackend.length > 0 && (
+              <SkillGroup title="BACKEND">
+                {webBackend.map((s) => (
+                  <SkillBar key={s.id} label={s.name} percent={s.level} />
+                ))}
+              </SkillGroup>
+            )}
+            {webOther.length > 0 && (
+              <SkillGroup>
+                {webOther.map((s) => (
+                  <SkillBar key={s.id} label={s.name} percent={s.level} />
+                ))}
+              </SkillGroup>
+            )}
           </SkillCard>
 
           {/* 02 – Développement Mobile */}
@@ -56,12 +113,13 @@ export default function SkillsPage() {
             delay="0.2s"
           >
             <SkillGroup>
-              <SkillBar label="Flutter" percent={85} />
-              <SkillBar label="Dart" percent={80} />
-              <SkillBar label="Consommation API REST" percent={85} />
-              <SkillBar label="SQLite" percent={70} />
-              <SkillBar label="UI/UX Mobile" percent={75} />
-              <SkillBar label="Intégration Backend" percent={80} />
+              {mobile.length > 0 ? (
+                mobile.map((s) => (
+                  <SkillBar key={s.id} label={s.name} percent={s.level} />
+                ))
+              ) : (
+                <p className="text-sm text-gray-400 dark:text-gray-500 italic">Aucune compétence mobile pour le moment.</p>
+              )}
             </SkillGroup>
           </SkillCard>
 
@@ -71,13 +129,13 @@ export default function SkillsPage() {
             delay="0.3s"
           >
             <SkillGroup>
-              <SkillBar label="Docker" percent={90} />
-              <SkillBar label="Kubernetes" percent={85} />
-              <SkillBar label="AWS (Services)" percent={85} />
-              <SkillBar label="CI/CD (GitHub Actions)" percent={85} />
-              <SkillBar label="Amazon ECR" percent={80} />
-              <SkillBar label="Linux (Ubuntu)" percent={85} />
-              <SkillBar label="Surveillance &amp; Logs" percent={70} />
+              {cloud.length > 0 ? (
+                cloud.map((s) => (
+                  <SkillBar key={s.id} label={s.name} percent={s.level} />
+                ))
+              ) : (
+                <p className="text-sm text-gray-400 dark:text-gray-500 italic">Aucune compétence cloud pour le moment.</p>
+              )}
             </SkillGroup>
           </SkillCard>
 
@@ -86,13 +144,17 @@ export default function SkillsPage() {
             desc="Outils et technologies que j'utilise au quotidien pour développer et déployer."
             delay="0.4s"
           >
-            <div className="flex flex-wrap gap-2">
-              {['Git', 'GitHub', 'IntelliJ IDEA', 'VS Code', 'MySQL', 'PostgreSQL', 'RabbitMQ', 'PlantUML', 'Windows Server', 'Linux', 'Nginx'].map((tool) => (
-                <span key={tool} className="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-primary/10 text-primary border border-primary/20 hover:bg-primary/20 transition-colors">
-                  {tool}
-                </span>
-              ))}
-            </div>
+            {tools.length > 0 ? (
+              <div className="flex flex-wrap gap-2">
+                {tools.map((s) => (
+                  <span key={s.id} className="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-primary/10 text-primary border border-primary/20 hover:bg-primary/20 transition-colors">
+                    {s.name}
+                  </span>
+                ))}
+              </div>
+            ) : (
+              <p className="text-sm text-gray-400 dark:text-gray-500 italic">Aucun outil référencé pour le moment.</p>
+            )}
           </SkillCard>
 
           {/* 05 – Compétences Humaines */}
@@ -101,13 +163,17 @@ export default function SkillsPage() {
             delay="0.5s"
             className="md:col-span-2"
           >
-            <div className="flex flex-wrap gap-2">
-              {['Résolution de problèmes', "Esprit d'analyse", 'Autonomie', 'Apprentissage continu', 'Rigueur', "Esprit d'innovation", 'Travail en équipe', 'Communication technique', 'Gestion des priorités'].map((skill) => (
-                <span key={skill} className="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-primary/10 text-primary border border-primary/20 hover:bg-primary/20 transition-colors">
-                  {skill}
-                </span>
-              ))}
-            </div>
+            {soft.length > 0 ? (
+              <div className="flex flex-wrap gap-2">
+                {soft.map((s) => (
+                  <span key={s.id} className="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-primary/10 text-primary border border-primary/20 hover:bg-primary/20 transition-colors">
+                    {s.name}
+                  </span>
+                ))}
+              </div>
+            ) : (
+              <p className="text-sm text-gray-400 dark:text-gray-500 italic">Aucune compétence humaine pour le moment.</p>
+            )}
           </SkillCard>
 
         </div>
@@ -130,10 +196,10 @@ export default function SkillsPage() {
 
         {/* ========== STATISTIQUES ========== */}
         <div className="flex flex-wrap justify-around gap-8 bg-white dark:bg-gray-900 rounded-2xl p-8 shadow-lg border border-gray-200 dark:border-gray-800 animate-slide-up" style={{ animationDelay: '0.3s' }}>
-          <StatItem number="50+" label="Projets réalisés" />
-          <StatItem number="3+" label="Années d'expérience" />
-          <StatItem number="20+" label="Technologies maîtrisées" />
-          <StatItem number="100%" label="Passionné" />
+          <StatItem number={String(allSkills.length)} label="Compétences enregistrées" />
+          <StatItem number={String(web.length)} label="Web" />
+          <StatItem number={String(mobile.length + cloud.length)} label="Mobile &amp; Cloud" />
+          <StatItem number={String(tools.length + soft.length)} label="Outils &amp; Soft" />
         </div>
 
       </div>
